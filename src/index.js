@@ -3,7 +3,16 @@ const moment = require('moment')
 const inquirer = require('inquirer')
 const shelljs = require('shelljs')
 
+const programs = ['vim', 'vlc', 'nodejs', 'npm', 'deluge' ]
+const npmTools = ['yarn']
+
 //functions
+function jumpLine(numberOfLines){
+    for(let i = 0; i < numberOfLines; i++){
+        shelljs.echo('')
+    }
+}
+
 function sleep(seconds){
     shelljs.exec(`sleep ${seconds}`)
 }
@@ -45,7 +54,7 @@ function npm(action, apps = []){
 inquirer.prompt([
     {
         name: 'wellcome',
-        message: `Ola, bem vindo ao linux flavors.`
+        message: `Ola, bem vindo ao Debian flavors.`
     }
 ])
 
@@ -56,9 +65,13 @@ inquirer.prompt([
         message: 'Vamos comecar?'
     }
 ]).then((response) => {
-    if(!response){
+    if(!response.accept){
         console.log('Encerrando aplicacao...')
+        jumpLine(1)
+        return 
     }
+
+    let initJobTime = moment().format()
 
     console.log(`Primeiro vamos instalar alguns programas`)
     sleep(0.5)
@@ -67,10 +80,35 @@ inquirer.prompt([
     console.log(`Sera necessario digitar a senha somente uma vez.`)
     sleep(0.5)
     apt('upgrade')  
-    apt('install', ['vim', 'vlc', 'nodejs', 'npm', 'deluge' ])
+    apt('install', programs)
     apt('clear')  
-    npm('install', ['yarn'])
-    console.log('passou por tudo')
+    npm('install', npmTools)
+    jumpLine(1)
+    console.log(`Processo terminado ${moment(initJobTime).locale('pt-br').fromNow()}`)
+    jumpLine(1)
+
+    inquirer.prompt([
+        {
+            type: 'list',
+            name: 'toggleNextAction',
+            message: 'Parece que fizemos o basico, qual e o proximo passo?',
+            choices: ['Vizualizar opcoes extras', 'Sair'],
+        }
+    ]).then(answer => {
+        console.log(answers.toggleNextAction)
+        inquirer.prompt([
+            {
+                type: 'checkbox',
+                name: 'extraOptions',
+                message: 'Selecione as opcao desejada',
+                choices: ['Ambiente Grafico i3Wm', 'Ferramentas', 'Dev configs']
+            }
+        ]).then((answer) => {
+            
+        })
+    })
+    
 })
 
+// i3 i3-wm i3status
 
