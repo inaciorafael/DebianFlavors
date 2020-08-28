@@ -3,7 +3,7 @@ const moment = require('moment')
 const inquirer = require('inquirer')
 const shelljs = require('shelljs')
 
-const programs = ['vim', 'vlc', 'nodejs', 'npm', 'deluge' ]
+const programs = ['vim', 'vlc', 'weechat', 'nodejs', 'npm', 'deluge', 'python3-pip' ]
 const npmTools = ['yarn']
 
 //functions
@@ -50,7 +50,7 @@ function npm(action, apps = []){
     }
 }
 
-//Messages
+//Interaction
 inquirer.prompt([
     {
         name: 'wellcome',
