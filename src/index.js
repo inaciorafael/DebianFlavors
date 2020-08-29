@@ -3,7 +3,11 @@ const moment = require('moment')
 const inquirer = require('inquirer')
 const shelljs = require('shelljs')
 
-const programs = ['vim', 'vlc', 'weechat', 'nodejs', 'npm', 'deluge', 'python3-pip' ]
+//Troque o link do wallpaper.
+const wallpaper = `https://images7.alphacoders.com/698/698363.png`
+
+//Adicione ou remova os programas como quiser.
+const programs = ['vim', 'vlc', 'feh','ranger', 'compton', 'wget', 'curl', 'gimp', 'weechat', 'nodejs', 'npm', 'deluge','i3blocks','i3status', 'python3-pip' ]
 const npmTools = ['yarn']
 
 //functions
@@ -18,7 +22,7 @@ function sleep(seconds){
 }
 
 function apt(action, apps = []){    
-    let cmd = `sudo apt-get`
+    const cmd = `sudo apt-get`
 
     if(action === 'install'){
         apps.map((appName) => {
@@ -48,6 +52,16 @@ function npm(action, apps = []){
             shelljs.exec(`${cmd} install -g ${appName}`)
         })
     }
+}
+
+function i3Dir(){
+    shelljs.cd('~')
+    shelljs.cd('.config/i3')
+}
+
+function i3wmEssentialsDir(){
+    shelljs.cd('~')
+    shelljs.cd('.i3wmEssentials')
 }
 
 //Interaction
@@ -86,29 +100,20 @@ inquirer.prompt([
     jumpLine(1)
     console.log(`Processo terminado ${moment(initJobTime).locale('pt-br').fromNow()}`)
     jumpLine(1)
+    console.log('Baixando papel de parede...')
+    sleep(2)
+    jumpLine(1)
+    shelljs.exec(`mkdir ~/.i3wmEssentials`)
+    shelljs.exec(`mkdir ~/.i3wmEssentials/Wallpaper`)
+    shelljs.exec(`cd ~/.i3wmEssentials/Wallpaper && wget -O wallpaper.png ${wallpaper}`)
+    console.log(`Configurando papel de parede...`)
+    i3Dir()
+    shelljs.exec(`echo "exec --no-startup-id feh --bg-fill ~/.i3wmEssentials/Wallpaper/wallpaper.png" >> ~/.config/i3/config`)
+    console.log(`Modificacao so fara efeito apos a reinicializacao.`)
+    jumpLine(1)
+    i3wmEssentialsDir()
+    // shelljs.exec(`chmod +x polybarInstall`)
+    // shelljs.exec(`./polybarInstall --install`)
 
-    inquirer.prompt([
-        {
-            type: 'list',
-            name: 'toggleNextAction',
-            message: 'Parece que fizemos o basico, qual e o proximo passo?',
-            choices: ['Vizualizar opcoes extras', 'Sair'],
-        }
-    ]).then(answer => {
-        console.log(answers.toggleNextAction)
-        inquirer.prompt([
-            {
-                type: 'checkbox',
-                name: 'extraOptions',
-                message: 'Selecione as opcao desejada',
-                choices: ['Ambiente Grafico i3Wm', 'Ferramentas', 'Dev configs']
-            }
-        ]).then((answer) => {
-            
-        })
-    })
-    
 })
-
-// i3 i3-wm i3status
 
